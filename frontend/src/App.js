@@ -1,6 +1,7 @@
 import './App.css';
 import React, {useState} from 'react'
 import axios from 'axios'
+import {saveAs} from 'file-saver'
 
 function App() {
 
@@ -11,8 +12,34 @@ function App() {
   const [price2, setPrice2] = useState(0)
   const [price3, setPrice3] = useState(0)
 
-  const SubmitForm = (e)=>{
+  const data = {name, receipt, email, price1, price2, price3}
+
+  const SubmitForm = async (e)=>{
     e.preventDefault();
+    await axios.post(`http://localhost:8000/createPdf`, data)
+    .then(()=>{
+      axios.get(`http://localhost:8000/fetchPdf`, {responseType: 'blob'})
+      .then(()=>{
+        const pdfBlob = new Blob([res.data], {type:'application/pdf'})
+
+        saveAs(pdfBlob, 'InvoiceDocument.pdf')
+
+        setName('')
+        setReceipt('')
+        setEmail('')
+        setPrice1(0)
+        setPrice2(0)
+        setPrice3(0)
+      })
+      .then(()=>{
+        axios.post(`http://localhost:8000/sendPdf`, email )
+        .then((response)=>{
+          console.log(response);
+          alert(response.data)
+          
+        })
+      })
+    })
 
   }
   
