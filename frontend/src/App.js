@@ -19,7 +19,7 @@ function App() {
     await axios.post(`http://localhost:8000/createPdf`, data)
     .then(()=>{
       axios.get(`http://localhost:8000/fetchPdf`, {responseType: 'blob'})
-      .then(()=>{
+      .then((res)=>{
         const pdfBlob = new Blob([res.data], {type:'application/pdf'})
 
         saveAs(pdfBlob, 'InvoiceDocument.pdf')
@@ -32,7 +32,7 @@ function App() {
         setPrice3(0)
       })
       .then(()=>{
-        axios.post(`http://localhost:8000/sendPdf`, email )
+        axios.post(`http://localhost:8000/sendPdf`, {email:email} )
         .then((response)=>{
           console.log(response);
           alert(response.data)

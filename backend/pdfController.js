@@ -5,24 +5,26 @@ const nodemailer = require('nodemailer')
 const fs =  require('fs')
 
 const pdfTemplate = require("./documents/document")
+const env = require('dotenv')
+env.config()
 
 exports.createPdf = (req, res)=>{
-    pdf.create(pdfTemplate(req.body,{}).toFile('invoice.pdf', (err)=>{
+    pdf.create(pdfTemplate(req.body),{}).toFile('invoice.pdf', (err)=>{
         if(err){
             console.log(err);
         }
         res.send('pdf generated')
-    }))
+    })
 
 }
 
 exports.fetchPdf= (req, res)=>{
-    res.sendFile(path.join(path.dirname(__dirname),'invoice.pdf'))
+    res.sendFile(path.join(__dirname),'invoice.pdf')
 
 }
 
 exports.sendPdf=(req, res)=>{
-    pathToAttachment = path.join(path.dirname(__dirname), 'invoice.pdf')
+    pathToAttachment = path.join(__dirname,'invoice.pdf')
     attatchment = fs.readFileSync(pathToAttachment).toString("base64")
 
     let smtpTransport = nodemailer.createTransport({
